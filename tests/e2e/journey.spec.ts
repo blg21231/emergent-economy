@@ -6,6 +6,10 @@ import { test, expect, type ConsoleMessage, type Request } from "@playwright/tes
 
 const ROUTES = ["/", "/specialization", "/prices", "/money", "/inequality", "/gravity", "/ledger"];
 
+// The origin under test — the local preview by default, or the live prod URL during smoke. Used as
+// the single same-origin reference so the cross-origin and air-gap checks hold against either target.
+const BASE_ORIGIN = new URL(process.env.SMOKE_URL ?? "http://localhost:4173").origin;
+
 function trackConsoleAndNetwork(page: import("@playwright/test").Page) {
   const errors: string[] = [];
   const crossOrigin: string[] = [];
@@ -17,8 +21,7 @@ function trackConsoleAndNetwork(page: import("@playwright/test").Page) {
     const url = r.url();
     if (url.startsWith("data:") || url.startsWith("blob:")) return;
     const origin = new URL(url).origin;
-    const base = new URL(page.url() === "about:blank" ? "http://localhost:4173" : page.url()).origin;
-    if (origin !== base) crossOrigin.push(url);
+    if (origin !== BASE_ORIGIN) crossOrigin.push(url);
   });
   return { errors, crossOrigin };
 }
@@ -70,7 +73,7 @@ test.describe("AC11 ship / self-contained / usable", () => {
     // block every cross-origin request; only same-origin assets may load.
     await context.route("**/*", (route) => {
       const url = route.request().url();
-      if (url.includes("localhost:4173") || url.startsWith("data:") || url.startsWith("blob:")) {
+      if (url.startsWith("data:") || url.startsWith("blob:") || new URL(url).origin === BASE_ORIGIN) {
         return route.continue();
       }
       return route.abort();

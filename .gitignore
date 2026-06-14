@@ -6,3 +6,4 @@ playwright-report
 test-results
 *.local
 perf-report.json
+.vercel
