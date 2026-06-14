@@ -1,0 +1,34 @@
+{
+  "name": "emergent-economy",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "gen:emergence": "vite-node scripts/gen-emergence.ts",
+    "build": "npm run gen:emergence && tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.5",
+    "@types/three": "^0.171.0",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "@webgpu/types": "^0.1.52",
+    "eslint": "^8.57.1",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "three": "^0.171.0"
+  }
+}
